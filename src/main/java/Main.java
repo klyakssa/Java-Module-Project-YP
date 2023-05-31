@@ -14,26 +14,36 @@ public class Main {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+
         out.println("На скольких человек необходимо разделить счёт?");
-        int peopleInt = scanner.nextInt();
-        if(peopleInt <= 1){
-            System.out.println("Ошибка. Нет сысла в счете.");
+        String peopleInt = scanner.next();
+        if(!isNumeric(peopleInt)){
+            out.println("Ошибка. Нужно было ввести цифру. Перезапустите программу и попробуйте снова!");
             return;
         }
+
+        Double people = Double.parseDouble(peopleInt);
+        if(people <= 1){
+            out.println("Ошибка. Нет сысла в счете.");
+            return;
+        }
+
         LogicCalc item = new LogicCalc();
+
         while(true) {
             out.println("Напишите название товара?");
             String nameItem = scanner.next();
             out.println("Напишите стоимость товара? Формат: 10.45, где 10 - руб, 45 - копейки");
             float cost = scanner.nextFloat();
-            item.addItem(nameItem,cost);
+            item.addItem(nameItem,Math.abs(cost));
             out.println("Товар успешно добавлен");
-            out.println("Хотите ли добавить ещё один товар?");
+            out.println("Хотите ли добавить ещё один товар? Если хотите завершить программу напишите: \"Завершить\"");
             String exit = scanner.next();
             if (exit.equalsIgnoreCase("Завершить")){
                 break;
             }
         }
+
         scanner.close();
         ArrayList<String> allItems = item.outputAllItem();
         for(int i = 0; i < allItems.size(); i++){
@@ -42,21 +52,44 @@ public class Main {
 
         String rubleSuffix;
 
-        int lastDigit = (int) (item.outputAllCost()/peopleInt * 10) % 10;
-        int lastTwoDigits = (int) (item.outputAllCost()/peopleInt * 100) % 100;
+        Double allcost = item.outputAllCost()/people;
+        rubleSuffix = rubleRight(allcost);
 
-        if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
-            rubleSuffix = "рублей";
-        } else if (lastDigit == 1) {
+        String template = "\nКаждый человек должен заплатить по %.2f %s";
+        out.println(String.format(template, allcost, rubleSuffix));
+
+
+    }
+
+    public static boolean isNumeric(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public static String rubleRight(Double allcost){
+        allcost = Math.floor(allcost);
+        String allc = String.valueOf(allcost);
+        allc = allc.substring(0,allc.length()-2);
+        int lastDigit = Integer.parseInt(String.valueOf(allc.charAt(allc.length()-1)));
+        if (lastDigit == 0 && allc.length() == 1){
+            String da =  String.valueOf(allc.charAt(allc.lastIndexOf(1)));
+            String str = String.valueOf(allc.charAt(allc.lastIndexOf(0)));
+            da.concat(str);
+            lastDigit = Integer.parseInt(da);
+
+        }
+        String rubleSuffix;
+        if (lastDigit == 1) {
             rubleSuffix = "рубль";
         } else if (lastDigit >= 2 && lastDigit <= 4) {
             rubleSuffix = "рубля";
         } else {
             rubleSuffix = "рублей";
         }
-
-
-        String template = "\nКаждый человек должен заплатить по %.2f %s";
-        out.println(String.format(template, item.outputAllCost()/peopleInt, rubleSuffix));
+        return rubleSuffix;
     }
 }
