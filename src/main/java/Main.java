@@ -85,7 +85,9 @@ public class Main {
         String rubleSuffix;
         if (lastDigit == 1) {
             rubleSuffix = "рубль";
-        } else if (lastDigit >= 2 && lastDigit <= 4) {
+        }else if (lastDigit >= 11 && lastDigit <= 19) {
+            rubleSuffix = "рублей";
+        }else if (lastDigit >= 2 && lastDigit <= 4) {
             rubleSuffix = "рубля";
         } else {
             rubleSuffix = "рублей";
