@@ -4,7 +4,7 @@ import java.util.HashMap;
 public class LogicCalc {
     ArrayList<String> nameItems = new ArrayList<>();
     ArrayList<Float> allOfCost = new ArrayList<>();
-    float allCosts = 0;
+    Double allCosts = 0.0;
 
 
 
@@ -20,7 +20,7 @@ public class LogicCalc {
     }
 
     //
-    float outputAllCost() {
+    Double outputAllCost() {
         return this.allCosts;
     }
 }
